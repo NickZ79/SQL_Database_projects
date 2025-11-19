@@ -2,13 +2,16 @@
 -- SQLite version of the Family Reunion database
 -- Based on your original SQL Server assignment, with a cleaned-up allergy design
 
-PRAGMA foreign_keys = ON;
+-- Enable foreign key enforcement when running on SQLite. Some SQL parsers (e.g., SQL Server)
+-- do not accept PRAGMA statements and will report errors like "set_verb is invalid".
+-- Run the following line manually in a SQLite client if needed:
+-- PRAGMA foreign_keys = ON;
 
 -- ==========================
 -- Addresses: shared household info
 -- ==========================
 CREATE TABLE Addresses (
-    AddressID      INTEGER PRIMARY KEY AUTOINCREMENT,
+    AddressID      INTEGER PRIMARY KEY,
     Street         TEXT NOT NULL,
     City           TEXT NOT NULL,
     State          TEXT NOT NULL,
@@ -19,7 +22,7 @@ CREATE TABLE Addresses (
 -- Family Members: one row per person
 -- ==========================
 CREATE TABLE FamilyMembers (
-    FamilyMemberID INTEGER PRIMARY KEY AUTOINCREMENT,
+    FamilyMemberID INTEGER PRIMARY KEY,
     FirstName      TEXT NOT NULL,
     LastName       TEXT NOT NULL,
     Status         TEXT NOT NULL CHECK (Status IN ('F','M','C','A')),
@@ -34,7 +37,7 @@ CREATE TABLE FamilyMembers (
 -- Allergy types (e.g., Peanuts, Gluten, Dairy)
 -- ==========================
 CREATE TABLE Allergies (
-    AllergyID          INTEGER PRIMARY KEY AUTOINCREMENT,
+    AllergyID          INTEGER PRIMARY KEY,
     AllergyDescription TEXT NOT NULL
 );
 
@@ -54,7 +57,7 @@ CREATE TABLE FamilyMemberAllergies (
 -- Reunion Locations
 -- ==========================
 CREATE TABLE ReunionLocations (
-    LocationID          INTEGER PRIMARY KEY AUTOINCREMENT,
+    LocationID          INTEGER PRIMARY KEY,
     LocationName        TEXT NOT NULL,
     LocationDescription TEXT,
     LocationAddress     TEXT NOT NULL
@@ -64,7 +67,7 @@ CREATE TABLE ReunionLocations (
 -- Reunions (individual events)
 -- ==========================
 CREATE TABLE Reunions (
-    ReunionID      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ReunionID      INTEGER PRIMARY KEY,
     ReunionName    TEXT NOT NULL,
     LocationID     INTEGER NOT NULL,
     DateOfReunion  TEXT NOT NULL,    -- store as ISO date string: 'YYYY-MM-DD'
@@ -79,7 +82,7 @@ CREATE TABLE Reunions (
 -- Reunion Responses (RSVPs)
 -- ==========================
 CREATE TABLE ReunionResponses (
-    ResponseID      INTEGER PRIMARY KEY AUTOINCREMENT,
+    ResponseID      INTEGER PRIMARY KEY,
     FamilyID        INTEGER NOT NULL,   -- primary contact person for the family
     ReunionID       INTEGER NOT NULL,
     AdultCount      INTEGER NOT NULL CHECK (AdultCount >= 0),
