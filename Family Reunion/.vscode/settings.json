@@ -5,7 +5,14 @@
 
     "files.associations": {
     "*.sql": "sqlite"
-  }
+  },
+
+  "sqlite.connections": [
+    {
+      "name": "FamilyReunion",
+      "database": "C:\\Users\\nkzas\\Documents\\GitHub\\SQL_Database_projects\\Family Reunion\\family_reunion.db"
+    }
+  ]
 }
 
 
