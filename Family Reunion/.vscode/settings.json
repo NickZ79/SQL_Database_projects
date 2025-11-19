@@ -1,0 +1,12 @@
+{
+    "workbench.editor.enablePreviewFromCodeNavigation": true,
+    "workbench.editor.enablePreviewFromQuickOpen": true,
+    "mssql.intelliSense.enableErrorChecking": false,
+
+    "files.associations": {
+    "*.sql": "sqlite"
+  }
+}
+
+
+
