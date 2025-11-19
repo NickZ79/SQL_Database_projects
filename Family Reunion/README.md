@@ -1,123 +1,107 @@
 # 📘 Family Reunion Database — SQL → SQLite Case Study
 
-## 📝 Overview  
-This project began as a SQL Server assignment for a college database course. The goal was to design a relational database to manage information for a family reunion, including family members, addresses, allergies, event locations, and RSVP records.
+## 📝 Overview
+This project is a relational database system originally designed as a SQL Server assignment for a college course. It models real-world family reunion data, including members, addresses, allergies, event locations, and RSVP attendance.
 
-For this repository, the project was **converted to SQLite** to make it fully portable and easy to run without a SQL Server installation. The schema was updated for SQLite compatibility, and sample data was added to create a complete, working database suitable for use in a portfolio.
+The project has been fully **converted to SQLite** for portability, easy testing, and cross-platform compatibility. The repository now includes all scripts needed to create, populate, and reset the database.
 
 ---
 
 ## 🎯 Project Goals
 
-- Demonstrate relational database modeling  
-- Represent real-world data entities and relationships  
-- Implement referential integrity using foreign keys  
-- Provide a functioning example database for exploration  
-- Include example reporting queries for analytics  
+- Demonstrate complete relational database modeling  
+- Show normalized table design with foreign keys  
+- Provide schema, data, and reset scripts  
+- Offer example queries for analytics and reporting  
+- Deliver a fully functional `.db` file for exploration or portfolio use  
 
 ---
 
-## 🏗️ Database Schema
+## 🗂️ File Structure
 
-The system includes **seven core tables**, each representing a different part of the reunion–management workflow.
-
-### **1. Addresses**  
-Stores household address information shared by multiple family members.
-
-### **2. FamilyMembers**  
-Contains one record per person associated with the reunion.
-
-### **3. Allergies**  
-Stores the list of allergy types.
-
-### **4. FamilyMemberAllergies**  
-A many-to-many junction table connecting members to their allergies.
-
-### **5. ReunionLocations**  
-Lists locations where reunion events take place.
-
-### **6. Reunions**  
-Describes individual reunion events, dates, food, and pricing.
-
-### **7. ReunionResponses**  
-RSVP data including adult/child counts and fee amounts.
+```
+README.md                     → Project documentation (this file)
+family_reunion.db            → Prebuilt SQLite database
+family_reunion_schema.sql    → CREATE TABLE statements + constraints
+family_reunion_data.sql      → Sample INSERT statements
+reset_family_reunion.sql     → Drops and recreates the database schema
+.vscode/                     → Editor settings (ignored in Git)
+```
 
 ---
 
-## 🔧 Technologies Used
+## 🏗️ Database Schema Overview
 
-- SQL Server (original version)  
-- SQLite 3.51 (current version)  
-- Raw SQL schema + insert scripts  
-- SQLite command-line tools  
+The database contains **seven core tables**, each modeling a different real-world entity:
+
+1. **Addresses** – shared household address information  
+2. **FamilyMembers** – one record per person  
+3. **Allergies** – list of allergy types  
+4. **FamilyMemberAllergies** – many-to-many relationship between members and allergies  
+5. **ReunionLocations** – physical locations for reunion events  
+6. **Reunions** – individual reunion events + date + pricing  
+7. **ReunionResponses** – RSVP counts, attendance, and fee totals  
 
 ---
 
 ## 🔄 SQL Server → SQLite Conversion Changes
 
-During conversion, the following adjustments were made:
+During conversion, several updates were made to ensure full compatibility:
 
-- Replaced `IDENTITY` with `AUTOINCREMENT`  
-- Converted `NVARCHAR` to `TEXT`  
-- Standardized dates to `YYYY-MM-DD` string format  
-- Removed SQL Server-specific commands such as `GO`  
-- Adjusted constraint syntax for SQLite  
-- Added a junction table for many-to-many allergy modeling  
-- Enabled referential integrity using:
+- Replaced `IDENTITY` with `AUTOINCREMENT`
+- Converted all NVARCHAR types to `TEXT`
+- Standardized dates to `YYYY-MM-DD`
+- Removed SQL Server–specific commands (`GO`, certain constraint syntax)
+- Added `PRAGMA foreign_keys = ON` to enforce referential integrity
+- Implemented a proper many-to-many allergy model via junction table
+- Added consistent sample data for demonstration
+- Created reset script for quick rebuilding
 
-  ```sql
-  PRAGMA foreign_keys = ON;
-  ```
-
-- Added a full sample dataset for testing and demos  
-
-These changes maintain the original project intent while ensuring cross-platform compatibility.
+These changes retain the intent of the original assignment while making the database portable.
 
 ---
 
-## 📂 Files in This Repository
-
-```
-family_reunion.db                 → Prebuilt SQLite database (optional)
-family_reunion_sqlite.sql         → Schema: tables + foreign keys
-family_reunion_sample_data.sql    → Insert script for sample data
-README.md                         → Documentation (this file)
-```
-
----
-
-## 🚀 How to Use
+## 🚀 How to Use the Project
 
 ### **1. Install SQLite**
-Download the CLI tools and extract them somewhere like:
+Download and extract SQLite tools to a location like:
 
 ```
 C:\sqlite\
 ```
 
-### **2. Build the Database**
-Run the schema:
+### **2. Create the Database (Schema Only)**
 
 ```
-sqlite3 family_reunion.db < family_reunion_sqlite.sql
+sqlite3 family_reunion.db < family_reunion_schema.sql
 ```
 
 ### **3. Insert Sample Data**
+
 ```
-sqlite3 family_reunion.db < family_reunion_sample_data.sql
+sqlite3 family_reunion.db < family_reunion_data.sql
 ```
 
-### **4. Open the Database**
+### **4. Reset the Database Entirely**
+
+```
+sqlite3 family_reunion.db < reset_family_reunion.sql
+```
+
+### **5. Open the Database in the SQLite Shell**
+
 ```
 sqlite3 family_reunion.db
 ```
 
-### **5. List All Tables**
+### **6. View All Tables**
+
 ```
 .tables
 ```
 
-### **6. Run a Test Query**
+### **7. Test Query**
+
 ```
 SELECT * FROM FamilyMembers;
 ```
@@ -126,7 +110,7 @@ SELECT * FROM FamilyMembers;
 
 ## 📊 Example Queries
 
-### **Attendance & Revenue per Reunion**
+### **1. Attendance & Revenue per Reunion**
 
 ```sql
 SELECT 
@@ -139,7 +123,7 @@ JOIN ReunionResponses RR ON R.ReunionID = RR.ReunionID
 GROUP BY R.ReunionName, R.DateOfReunion;
 ```
 
-### **List All Members With Their Allergies**
+### **2. Family Members With Documented Allergies**
 
 ```sql
 SELECT 
@@ -147,22 +131,21 @@ SELECT
     FM.LastName,
     A.AllergyDescription
 FROM FamilyMembers FM
-JOIN FamilyMemberAllergies FMA ON FM.FamilyMemberID = FMA.FamilyMemberID
-JOIN Allergies A ON FMA.AllergyID = A.AllergyID;
+JOIN FamilyMemberAllergies FMA 
+      ON FM.FamilyMemberID = FMA.FamilyMemberID
+JOIN Allergies A 
+      ON FMA.AllergyID = A.AllergyID;
 ```
 
 ---
 
-## 📌 Project Notes
+## 📌 Notes
 
-This database project is part of a broader backend and data-modeling portfolio. Converting the project from SQL Server to SQLite allows it to:
-
-- Run on any operating system  
-- Function without a database server  
-- Be showcased easily as a standalone `.db` file  
-- Be integrated into a professional portfolio website  
+- The `.db` file is included for convenience, but can be rebuilt at any time using the schema + data scripts.  
+- The reset script (`reset_family_reunion.sql`) is ideal for testing or demonstrating a clean database setup.  
+- This project is part of a backend / database-focused portfolio showcasing SQL modeling and data relationships.
 
 ---
 
-## ✅ License  
+## ✅ License
 This project is available for **personal and educational use**.
